@@ -8,14 +8,14 @@ df = SHHS %>%
   rename(ID = pptid, age = age_s1, BMI = bmi_s1, HTN = HTNDerv_s1)
 
 # Perform the upstrap algorithm
-B = 10000
+U = 10000
 n = dim(df)[1]
 r_seq = seq(1, 5, 0.2)
 frequ = c()
 alpha = 0.05
 for (r in r_seq){
   count = 0
-  for (b in 1:B){
+  for (u in 1:U){
     data = df[sample(1:n, size = n*r, replace = TRUE), ]
     sleep_logi = glm(slp_apnea ~ gender + age + BMI + HTN + HTN*age, data = data, family = "binomial")
     summary_glm = summary(sleep_logi)
@@ -23,7 +23,7 @@ for (r in r_seq){
       count = count + 1
     }
   }
-  frequ = c(frequ, count/B)
+  frequ = c(frequ, count/U)
 }
 
 # Create the visualization of the power to detect the HTN effect
